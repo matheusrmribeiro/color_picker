@@ -1,0 +1,38 @@
+
+{
+	"buildFiles" : [ "D:/Matheus/Projects/Flutter/color_picker/android/CMakeLists.txt" ],
+	"cFileExtensions" : [ "c" ],
+	"cleanCommands" : 
+	[
+		"D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\arm64-v8a --target clean"
+	],
+	"libraries" : 
+	{
+		"convertImage-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "convertImage",
+			"buildCommand" : "D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\arm64-v8a --target convertImage",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android21 --gcc-toolchain=D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DconvertImage_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info -fno-experimental-isel  -fPIC      -c ",
+					"src" : "D:/Matheus/Projects/Flutter/color_picker/ios/Classes/converter.c",
+					"workingDirectory" : "D:/Matheus/Projects/Flutter/color_picker/android/app/.cxx/cmake/debug/arm64-v8a"
+				}
+			],
+			"output" : "D:/Matheus/Projects/Flutter/color_picker/build/app/intermediates/cmake/debug/obj/arm64-v8a/libconvertImage.so",
+			"toolchain" : "307795865"
+		}
+	},
+	"toolchains" : 
+	{
+		"307795865" : 
+		{
+			"cCompilerExecutable" : "D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}
