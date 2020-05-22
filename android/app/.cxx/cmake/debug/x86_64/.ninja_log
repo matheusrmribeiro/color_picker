@@ -1,5 +1,3 @@
 # ninja log v5
-1	72	0	CMakeFiles/convertImage.dir/C_/Matheus/Flutter/Projects/color_picker/ios/Classes/converter.c.o	c22901bb7e26c02d
-73	124	0	C:/Matheus/Flutter/Projects/color_picker/build/app/intermediates/cmake/debug/obj/x86_64/libconvertImage.so	dd21bbd9543bc4f0
-1	106	0	C:/Matheus/Flutter/Projects/color_picker/build/app/intermediates/cmake/debug/obj/x86_64/libconvertImage.so	dd21bbd9543bc4f0
-2	51	0	C:/Matheus/Flutter/Projects/color_picker/build/app/intermediates/cmake/debug/obj/x86_64/libconvertImage.so	dd21bbd9543bc4f0
+0	116	0	CMakeFiles/convertImage.dir/D_/Matheus/Projects/Flutter/color_picker/ios/Classes/converter.c.o	dcbfea724cb2e896
+116	176	0	D:/Matheus/Projects/Flutter/color_picker/build/app/intermediates/cmake/debug/obj/x86_64/libconvertImage.so	5ef9a64a4d9b3727

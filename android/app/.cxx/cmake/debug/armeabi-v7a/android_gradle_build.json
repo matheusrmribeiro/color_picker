@@ -1,10 +1,10 @@
 
 {
-	"buildFiles" : [ "C:/Matheus/Flutter/Projects/color_picker/android/CMakeLists.txt" ],
+	"buildFiles" : [ "D:/Matheus/Projects/Flutter/color_picker/android/CMakeLists.txt" ],
 	"cFileExtensions" : [ "c" ],
 	"cleanCommands" : 
 	[
-		"C:\\Users\\MATHEUS\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Matheus\\Flutter\\Projects\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
+		"D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
 	],
 	"libraries" : 
 	{
@@ -12,27 +12,27 @@
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "convertImage",
-			"buildCommand" : "C:\\Users\\MATHEUS\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Matheus\\Flutter\\Projects\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target convertImage",
+			"buildCommand" : "D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target convertImage",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi21 --gcc-toolchain=C:/Users/MATHEUS/AppData/Local/Android/Sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/MATHEUS/AppData/Local/Android/Sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DconvertImage_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC      -c ",
-					"src" : "C:/Matheus/Flutter/Projects/color_picker/ios/Classes/converter.c",
-					"workingDirectory" : "C:/Matheus/Flutter/Projects/color_picker/android/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi21 --gcc-toolchain=D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DconvertImage_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC      -c ",
+					"src" : "D:/Matheus/Projects/Flutter/color_picker/ios/Classes/converter.c",
+					"workingDirectory" : "D:/Matheus/Projects/Flutter/color_picker/android/app/.cxx/cmake/debug/armeabi-v7a"
 				}
 			],
-			"output" : "C:/Matheus/Flutter/Projects/color_picker/build/app/intermediates/cmake/debug/obj/armeabi-v7a/libconvertImage.so",
-			"toolchain" : "2690190353"
+			"output" : "D:/Matheus/Projects/Flutter/color_picker/build/app/intermediates/cmake/debug/obj/armeabi-v7a/libconvertImage.so",
+			"toolchain" : "307795865"
 		}
 	},
 	"toolchains" : 
 	{
-		"2690190353" : 
+		"307795865" : 
 		{
-			"cCompilerExecutable" : "C:/Users/MATHEUS/AppData/Local/Android/Sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
-			"cppCompilerExecutable" : "C:/Users/MATHEUS/AppData/Local/Android/Sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+			"cCompilerExecutable" : "D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "D:/ProgramFiles/AndroidSDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
 		}
 	}
 }

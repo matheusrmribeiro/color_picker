@@ -31,19 +31,15 @@ class ColorPickerWidget extends StatefulWidget {
 class _ColorPickerWidgetState extends State<ColorPickerWidget> {
   GlobalKey imageKey = GlobalKey();
 
-  final StreamController<Color> _stateController = StreamController<Color>();
+  final BehaviorSubject<Color> _stateController = BehaviorSubject<Color>();
   final BehaviorSubject<CameraImage> _cameraStream = BehaviorSubject<CameraImage>();
+  final BehaviorSubject<imglib.Image> _screenshotStream = BehaviorSubject<imglib.Image>();
+  final BehaviorSubject<imglib.Image> _photoStream = BehaviorSubject<imglib.Image>();
 
   CameraController camera;
-  imglib.Image photo;
-  imglib.Image img;
-  bool _cameraInitialized = false;
-  bool getImage = false;
+
   Convert conv;
   double cameraSize;
-  
-  double pyMark = 30;
-  double pxMark = 30;
 
   final DynamicLibrary convertImageLib = Platform.isAndroid
     ? DynamicLibrary.open("libconvertImage.so")
@@ -60,11 +56,8 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
 
       camera.startImageStream((image) async => _cameraStream.add(image));  
 
-      searchPixel(Offset(30, 30));
+      setState(() {});
 
-      setState(() {
-        _cameraInitialized = true;
-      });
     });  
 
     conv = convertImageLib.lookup<NativeFunction<convert_func>>('convertImage').asFunction<Convert>();
@@ -74,10 +67,12 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
   void dispose() {
     camera.stopImageStream();
     camera?.dispose();
+    _cameraStream.close();
+    _photoStream.close();
+    _stateController.close();
+    _screenshotStream.close();
     super.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -93,111 +88,148 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
           Container(
             height: cameraSize,
             width: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: <Widget>[
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+
+                  Row(
+                    children: <Widget>[
 
 
-                IgnorePointer(
-                  ignoring: true,
-                  child: Container(
-                    child: CameraPreview(camera)
-                  )
-                ),
-
-
-                GestureDetector(
-                  onPanDown: (details) {
-                    searchPixel(details.globalPosition);
-                  },
-                  onPanUpdate: (details) {
-                    searchPixel(details.globalPosition);
-                  },
-                  child: Container(
-                    color: Colors.red,
-                    height: cameraSize,
-                    width: MediaQuery.of(context).size.width,
-                    child: RepaintBoundary(
-                      key: imageKey,
-                      child: (img == null)
-                      ? Container(color: Colors.red,)
-                      : Image.memory(
-                          imglib.encodeJpg(img),
-                          fit: BoxFit.cover,
-                        )
-                    ),
-                  ),
-                ),
-
-
-                IgnorePointer(
-                  ignoring: true,
-                  child: Container(
-                    child: CameraPreview(camera)
-                  )
-                ),
-
-
-
-
-
-                StreamBuilder(
-                  initialData: Colors.green[500],
-                  stream: _stateController.stream,
-                  builder: (buildContext, snapColor) {
-                    Color selectedColor = snapColor.data ?? Colors.green;
-                    return Align(
-                      alignment: Alignment.center,
-                      child: IgnorePointer(
+                      IgnorePointer(
                         ignoring: true,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(width: 2.0, color: Colors.white),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2)
-                                  )
-                                ]
-                              ),
-                              child: Container(
-                                margin: EdgeInsets.all(40),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
+                        child: Container(
+                          height: cameraSize,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: CameraPreview(camera)
+                        )
+                      ),
+
+
+                      GestureDetector(
+                        onPanDown: (details) {
+                          searchPixel();
+                        },
+                        onPanUpdate: (details) {
+                          searchPixel();
+                        },
+                        child: Container(
+                          color: Colors.blue,
+                          height: cameraSize,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: StreamBuilder(
+                            stream: _screenshotStream.stream,
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Container();
+                                
+                              Future.delayed(Duration(milliseconds: 500)).then((value) {
+                                loadSnapshotBytes(); 
+                              });
+                              
+                              return RepaintBoundary(
+                                key: imageKey,
+                                child: Image.memory(
+                                  imglib.encodePng(snapshot.data),
+                                  fit: BoxFit.cover,
+                                  // width: snapshot.data.width.toDouble(),
+                                  // height: snapshot.data.height.toDouble(),
                                 ),
-                              ),
-                            ),
-                            Container(
-                              width: 100,
-                              height: 20,
-                              margin: EdgeInsets.only(top: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(width: 1.0, color: Colors.white),
-                                color: selectedColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2)
-                                  )
-                                ]
-                              ),
-                            )
-                          ],
+                              );
+                            }
+                          ),
                         ),
                       ),
-                    );
-                  }
-                )
-              ],
+                    ],
+                  ),
+                  
+                  StreamBuilder(
+                    initialData: Colors.green[500],
+                    stream: _stateController.stream,
+                    builder: (buildContext, snapColor) {
+                      Color selectedColor = snapColor.data ?? Colors.green;
+                      return Align(
+                        alignment: Alignment.center,
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(width: 2.0, color: Colors.white),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2)
+                                      )
+                                    ]
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.all(40),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 110,
+                                  height: 20,
+                                  margin: EdgeInsets.only(top: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(width: 1.0, color: Colors.white),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2)
+                                      )
+                                    ]
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 15,
+                                        height: 15,
+                                        margin: EdgeInsets.only(left: 2),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: selectedColor,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 5),
+                                          child: Text("$selectedColor",
+                                            style: TextStyle(
+                                              fontSize: 10
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  )
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -210,49 +242,41 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     );
   }
 
-  Future<void> searchPixel(Offset globalPosition) async {
-      captureImage(_cameraStream.stream.value);
-
-      setState(() {});
-
-      loadSnapshotBytes().then((value) => _calculatePixel(globalPosition));
+  Future<void> searchPixel() async {
+    captureImage(_cameraStream.stream.value);
   }
 
   Future<void> loadSnapshotBytes() async {
     RenderRepaintBoundary boxPaint = imageKey.currentContext.findRenderObject();
     ui.Image capture = await boxPaint.toImage();
     ByteData imageBytes = await capture.toByteData(format: ui.ImageByteFormat.png);
-    
+
     List<int> values = imageBytes.buffer.asUint8List();
-    photo = null;
-    photo = imglib.decodeImage(values);
+    
+    imglib.Image img;
+    img = imglib.decodeImage(values);
+
+    // _photoStream.add(null);
+    // _photoStream.add(img);
+
     capture.dispose();
-  }
+  // }
 
-  void _calculatePixel(Offset globalPosition) {
+  // void _calculatePixel() {
     RenderBox box = imageKey.currentContext.findRenderObject();
-    Offset localPosition = box.globalToLocal(globalPosition);
 
-    double px = box.size.height / 2;//localPosition.dx;
-    double py = box.size.width / 2;//localPosition.dy;
-    
-    pyMark = py;
-    pxMark = px;
-    
-    // if (true) {
-    //   double widgetScale = box.size.width / photo.width;
-    //   print(widgetScale);
-    //   px = (px / widgetScale);
-    //   py = (py / widgetScale);
-    // }
+    double px = box.size.height / 2;
+    double py = box.size.width / 2;
 
-    int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
+    // int pixel32 = _photoStream.value.getPixelSafe(px.toInt(), py.toInt());
+    int pixel32 = img.getPixelSafe(px.toInt(), py.toInt());
     int hex = abgrToArgb(pixel32);
 
     _stateController.add(Color(hex));
   }
 
-  void captureImage(CameraImage image) {
+  Future<void> captureImage(CameraImage image) async {
+    imglib.Image img;
 
     if(Platform.isAndroid){
       // Allocate memory for the 3 planes of the image
@@ -291,6 +315,8 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
         format: imglib.Format.bgra,
       );
     }
+
+    _screenshotStream.add(img);
   }
 }
 

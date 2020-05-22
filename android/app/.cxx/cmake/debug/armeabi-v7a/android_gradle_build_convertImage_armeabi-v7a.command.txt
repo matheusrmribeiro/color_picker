@@ -1,7 +1,7 @@
-Executable : C:\Users\MATHEUS\AppData\Local\Android\sdk\cmake\3.6.4111459\bin\cmake.exe
+Executable : D:\ProgramFiles\AndroidSDK\cmake\3.6.4111459\bin\cmake.exe
 arguments : 
 --build
-C:\Matheus\Flutter\Projects\color_picker\android\app\.cxx\cmake\debug\armeabi-v7a
+D:\Matheus\Projects\Flutter\color_picker\android\app\.cxx\cmake\debug\armeabi-v7a
 --target
 convertImage
 jvmArgs : 
