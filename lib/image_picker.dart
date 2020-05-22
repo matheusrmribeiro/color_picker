@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as imglib;
+import 'package:rxdart/rxdart.dart';
 
 typedef convert_func = Pointer<Uint32> Function(Pointer<Uint8>, Pointer<Uint8>, Pointer<Uint8>, Int32, Int32, Int32, Int32);
 typedef Convert = Pointer<Uint32> Function(Pointer<Uint8>, Pointer<Uint8>, Pointer<Uint8>, int, int, int, int); 
@@ -31,28 +32,39 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
   GlobalKey imageKey = GlobalKey();
 
   final StreamController<Color> _stateController = StreamController<Color>();
+  final BehaviorSubject<CameraImage> _cameraStream = BehaviorSubject<CameraImage>();
 
+  CameraController camera;
   imglib.Image photo;
-
-  CameraController controller;
-  Uint8List screenShot;
   imglib.Image img;
+  bool _cameraInitialized = false;
+  bool getImage = false;
+  Convert conv;
+  double cameraSize;
+  
+  double pyMark = 30;
+  double pxMark = 30;
 
   final DynamicLibrary convertImageLib = Platform.isAndroid
     ? DynamicLibrary.open("libconvertImage.so")
     : DynamicLibrary.process();
-  Convert conv;
 
   @override
   void initState() {
     super.initState();
-    controller = CameraController(widget.cameras[0], ResolutionPreset.max, enableAudio: false);
+    camera = CameraController(widget.cameras[0], ResolutionPreset.medium, enableAudio: false);
     
-    controller.initialize().then((_) {
+    camera.initialize().then((_) {
       if (!mounted)
         return;
 
-      setState(() {});
+      camera.startImageStream((image) async => _cameraStream.add(image));  
+
+      searchPixel(Offset(30, 30));
+
+      setState(() {
+        _cameraInitialized = true;
+      });
     });  
 
     conv = convertImageLib.lookup<NativeFunction<convert_func>>('convertImage').asFunction<Convert>();
@@ -60,86 +72,150 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    camera.stopImageStream();
+    camera?.dispose();
     super.dispose();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
+    cameraSize = MediaQuery.of(context).size.height * 0.7;
+
     return Scaffold(
       appBar: AppBar(
       ),
-      body: Stack(
-        children: <Widget>[
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: cameraSize,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: <Widget>[
 
 
-          GestureDetector(
-            onPanDown: (details) {
-              searchPixel(details.globalPosition);
-            },
-            onPanUpdate: (details) {
-              searchPixel(details.globalPosition);
-            },
-            child: CameraPreview(controller),
-          ),
+                IgnorePointer(
+                  ignoring: true,
+                  child: Container(
+                    child: CameraPreview(camera)
+                  )
+                ),
 
 
-          IgnorePointer(
-            ignoring: true,
-            child: RepaintBoundary(
-              key: imageKey,
-              child: (img == null)
-              ? Container()
-              : Image.memory(
-                  imglib.encodePng(img),
+                GestureDetector(
+                  onPanDown: (details) {
+                    searchPixel(details.globalPosition);
+                  },
+                  onPanUpdate: (details) {
+                    searchPixel(details.globalPosition);
+                  },
+                  child: Container(
+                    color: Colors.red,
+                    height: cameraSize,
+                    width: MediaQuery.of(context).size.width,
+                    child: RepaintBoundary(
+                      key: imageKey,
+                      child: (img == null)
+                      ? Container(color: Colors.red,)
+                      : Image.memory(
+                          imglib.encodeJpg(img),
+                          fit: BoxFit.cover,
+                        )
+                    ),
+                  ),
+                ),
+
+
+                IgnorePointer(
+                  ignoring: true,
+                  child: Container(
+                    child: CameraPreview(camera)
+                  )
+                ),
+
+
+
+
+
+                StreamBuilder(
+                  initialData: Colors.green[500],
+                  stream: _stateController.stream,
+                  builder: (buildContext, snapColor) {
+                    Color selectedColor = snapColor.data ?? Colors.green;
+                    return Align(
+                      alignment: Alignment.center,
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(width: 2.0, color: Colors.white),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2)
+                                  )
+                                ]
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.all(40),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 100,
+                              height: 20,
+                              margin: EdgeInsets.only(top: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(width: 1.0, color: Colors.white),
+                                color: selectedColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2)
+                                  )
+                                ]
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 )
+              ],
             ),
           ),
-
-
-          StreamBuilder(
-            initialData: Colors.green[500],
-            stream: _stateController.stream,
-            builder: (buildContext, snapColor) {
-              Color selectedColor = snapColor.data ?? Colors.green;
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.all(30),
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: selectedColor,
-                        border: Border.all(width: 2.0, color: Colors.white),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(0, 2))
-                        ]),
-                  ),
-                ],
-              );
-            }
+          Expanded(
+            child: Container(
+              color: Colors.white,
+            ),
           )
         ],
       )
     );
   }
 
-  void searchPixel(Offset globalPosition) async {
+  Future<void> searchPixel(Offset globalPosition) async {
+      captureImage(_cameraStream.stream.value);
 
-    controller.startImageStream((image) async {
-      controller.stopImageStream();
-      captureImage(image);  
       setState(() {});
 
-      await loadSnapshotBytes();
-     _calculatePixel(globalPosition);
-    });  
-
-
+      loadSnapshotBytes().then((value) => _calculatePixel(globalPosition));
   }
 
   Future<void> loadSnapshotBytes() async {
@@ -157,15 +233,18 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     RenderBox box = imageKey.currentContext.findRenderObject();
     Offset localPosition = box.globalToLocal(globalPosition);
 
-    double px = localPosition.dx;
-    double py = localPosition.dy;
-
-    if (true) {
-      double widgetScale = box.size.width / photo.width;
-      print(py);
-      px = (px / widgetScale);
-      py = (py / widgetScale);
-    }
+    double px = box.size.height / 2;//localPosition.dx;
+    double py = box.size.width / 2;//localPosition.dy;
+    
+    pyMark = py;
+    pxMark = px;
+    
+    // if (true) {
+    //   double widgetScale = box.size.width / photo.width;
+    //   print(widgetScale);
+    //   px = (px / widgetScale);
+    //   py = (py / widgetScale);
+    // }
 
     int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
     int hex = abgrToArgb(pixel32);
@@ -173,7 +252,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     _stateController.add(Color(hex));
   }
 
-  void captureImage(CameraImage image){
+  void captureImage(CameraImage image) {
 
     if(Platform.isAndroid){
       // Allocate memory for the 3 planes of the image
