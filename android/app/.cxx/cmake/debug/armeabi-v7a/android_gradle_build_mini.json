@@ -1,16 +1,16 @@
 {
   "buildFiles": [
-    "D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\CMakeLists.txt"
+    "D:\\Projetos\\Flutter\\color_picker\\android\\CMakeLists.txt"
   ],
   "cleanCommands": [
-    "D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
+    "C:\\Users\\mathe\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Projetos\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
   ],
   "libraries": {
     "convertImage-Debug-armeabi-v7a": {
       "artifactName": "convertImage",
-      "buildCommand": "D:\\ProgramFiles\\AndroidSDK\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Matheus\\Projects\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target convertImage",
+      "buildCommand": "C:\\Users\\mathe\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Projetos\\Flutter\\color_picker\\android\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target convertImage",
       "abi": "armeabi-v7a",
-      "output": "D:\\Matheus\\Projects\\Flutter\\color_picker\\build\\app\\intermediates\\cmake\\debug\\obj\\armeabi-v7a\\libconvertImage.so"
+      "output": "D:\\Projetos\\Flutter\\color_picker\\build\\app\\intermediates\\cmake\\debug\\obj\\armeabi-v7a\\libconvertImage.so"
     }
   }
 }
