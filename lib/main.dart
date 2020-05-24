@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:color_picker/image_picker.dart';
+import 'package:color_picker/color_picker.dart';
 import 'package:flutter/material.dart';
 
 List<CameraDescription> cameras;
@@ -7,6 +7,7 @@ List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
+  
   runApp(MyApp());
 }
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: ColorPickerWidget(cameras)
+      home: ColorPicker(cameras)
     );
   }
 }
