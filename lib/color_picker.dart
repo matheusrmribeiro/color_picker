@@ -119,6 +119,7 @@ class _ColorPickerState extends State<ColorPicker> {
     });
 
     addColor(selectedColor);
+
   }
   
   @override
@@ -179,4 +180,5 @@ class _ColorPickerState extends State<ColorPicker> {
       )
     );
   }
+  
 }
