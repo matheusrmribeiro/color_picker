@@ -6,10 +6,10 @@
 * Read image pixels
 * Import and make a CMake file
 
-**Obs**
-
-* On debug mode you may have some delay when capturing images.
-* To have a good experience, uses a Medium image quality and run on release mode. _"flutter run -- release"_
+> **Notes**
+>
+>* On debug mode you may have some delay when capturing images.
+>* To have a good experience, uses a Medium image quality and run on release mode. _"flutter run -- release"_
 
 **Tested on**
 - [X] Android
