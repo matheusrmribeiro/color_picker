@@ -1,3 +1,0 @@
-C:/Matheus/Flutter/Projects/color_picker/android/app/.cxx/cmake/release/x86/CMakeFiles/rebuild_cache.dir
-C:/Matheus/Flutter/Projects/color_picker/android/app/.cxx/cmake/release/x86/CMakeFiles/convertImage.dir
-C:/Matheus/Flutter/Projects/color_picker/android/app/.cxx/cmake/release/x86/CMakeFiles/edit_cache.dir
