@@ -1,7 +1,7 @@
 # Color picker
  Challenge #1 - Color Picker
 
-**What I learned?**
+**What I've learned?**
 * How to use RenderBox to get Widget position
 * Read image pixels
 * Import and make a CMake file
