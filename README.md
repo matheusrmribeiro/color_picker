@@ -1,6 +1,8 @@
 # Color picker
  Challenge #1 - Color Picker
 
+> ATTENTION: This is not the full project, it`s just a piece of it.
+
 **What I've learned?**
 * How to use RenderBox to get Widget position
 * Read image pixels
